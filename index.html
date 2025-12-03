@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>命中率計算アプリ V2</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .formula {
+            text-align: center;
+            color: #6c757d;
+            font-size: 0.9em;
+            margin-bottom: 25px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        input[type="number"] {
+            width: 95%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .result {
+            margin-top: 25px;
+            padding: 15px;
+            border: 2px solid #28a745;
+            border-radius: 5px;
+            background-color: #e2f0e6;
+            text-align: center;
+        }
+
+        .result p {
+            margin: 0;
+            font-size: 20px;
+            font-weight: bold;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>🎯 命中率計算</h1>
+        <div class="formula">
+            命中率 = (命中精度)^0.55 × 10 - (回避)^0.55 × 10
+        </div>
+
+        <div class="form-group">
+            <label for="accuracy">命中精度 (整数):</label>
+            <input type="number" id="accuracy" value="100" min="0" required>
+        </div>
+
+        <div class="form-group">
+            <label for="evasion">回避 (整数):</label>
+            <input type="number" id="evasion" value="50" min="0" required>
+        </div>
+
+        <button onclick="calculateHitRate()">計算実行</button>
+
+        <div class="result" id="result-display">
+            <p>命中率: -</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateHitRate() {
+            // フォームから入力値を取得
+            const accuracyInput = document.getElementById('accuracy').value;
+            const evasionInput = document.getElementById('evasion').value;
+
+            // 整数に変換
+            const accuracy = parseInt(accuracyInput);
+            const evasion = parseInt(evasionInput);
+            
+            const resultDisplay = document.getElementById('result-display');
+
+            // --- 入力値のバリデーション ---
+            if (isNaN(accuracy) || isNaN(evasion) || accuracy < 0 || evasion < 0) {
+                resultDisplay.innerHTML = `<p style="color: #dc3545;">エラー: 非負の整数を入力してください。</p>`;
+                return;
+            }
+
+            // --- 新しい計算ロジックの実行 ---
+            try {
+                // 命中率 ＝ 命中精度^0.55 ×10 - 回避^0.55 × 10
+                
+                // 命中精度の項: (命中精度)^0.55 × 10
+                const accuracyTerm = Math.pow(accuracy, 0.55) * 10;
+                
+                // 回避の項: (回避)^0.55 × 10
+                const evasionTerm = Math.pow(evasion, 0.55) * 10;
+
+                let hitRate = accuracyTerm - evasionTerm;
+                
+                // 結果を小数点以下2桁に丸める
+                hitRate = hitRate.toFixed(2); 
+
+                // --- 結果の表示 ---
+                resultDisplay.innerHTML = `<p>命中率: ${hitRate}</p>`;
+
+            } catch (e) {
+                resultDisplay.innerHTML = `<p style="color: #dc3545;">計算中にエラーが発生しました。</p>`;
+                console.error(e);
+            }
+        }
+    </script>
+
+</body>
+</html>
